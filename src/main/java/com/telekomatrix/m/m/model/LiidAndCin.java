@@ -7,12 +7,15 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +30,7 @@ public class LiidAndCin implements Serializable{
 
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid")
-	@Column(name = "uuid")
+	@Column(columnDefinition = "CHAR(32)")
 	@Id
 	private String id;
 	
@@ -37,7 +40,8 @@ public class LiidAndCin implements Serializable{
 	@Column(name = "cin", unique=true)
 	private String cin;
 	
-	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy = "liidAndCin", fetch = FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+	@JsonManagedReference
 	private Set<LatLon> latLon = new HashSet<LatLon>();
 	
 

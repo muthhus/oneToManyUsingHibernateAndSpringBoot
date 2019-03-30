@@ -2,6 +2,7 @@ package com.telekomatrix.m.m.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,11 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
-@Table(name = "lat_lon")
+@Table(name = "lat_lon", uniqueConstraints = {@UniqueConstraint(columnNames= {"liid_cin_id", "timestamp"})})
 public class LatLon implements Serializable{
 
 	public String getId() {
@@ -62,7 +66,7 @@ public class LatLon implements Serializable{
 
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid")
-	@Column(name = "uuid")
+	@Column(columnDefinition = "CHAR(32)")
 	@Id
 	private String id;
 	
@@ -75,8 +79,9 @@ public class LatLon implements Serializable{
 	@Column(name = "lon")
 	private double lon;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "liid_cin_id")
+	@JsonBackReference
 	private LiidAndCin liidAndCin;
 	
 }
